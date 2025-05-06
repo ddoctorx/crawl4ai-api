@@ -20,7 +20,7 @@ show_help() {
     echo -e "  --uv            使用uv代替pip安装依赖 (如果已安装)"
     echo -e "  --no-venv       不创建虚拟环境"
     echo -e "  --install-only  只安装依赖，不启动服务"
-    echo -e "  --port=NUMBER   指定端口号 (默认: 8000)"
+    echo -e "  --port=NUMBER   指定端口号 (默认: 8089)"
     exit 0
 }
 
@@ -28,7 +28,7 @@ show_help() {
 USE_UV=false
 USE_VENV=true
 INSTALL_ONLY=false
-PORT=8000
+PORT=8089
 
 # 解析命令行参数
 for arg in "$@"; do

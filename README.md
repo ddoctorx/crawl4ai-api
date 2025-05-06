@@ -97,7 +97,7 @@ python -m app.main
 
 ```bash
 # 请求
-curl -X POST http://localhost:8000/api/crawl/url \
+curl -X POST http://21.6.136.160:8000/api/crawl/url \
   -H "Content-Type: application/json" \
   -d '{
     "url": "https://www.anthropic.com/engineering/building-effective-agents",
@@ -322,7 +322,7 @@ curl http://localhost:8000/api/crawl/health
 ### 爬取单个 URL (使用 fetch)
 
 ```javascript
-fetch('http://localhost:8000/api/crawl/url', {
+fetch('http://11.151.230.102:8000/api/crawl/url', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

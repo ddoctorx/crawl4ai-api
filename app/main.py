@@ -53,8 +53,20 @@ async def version():
     }
 
 
+@app.get("/api/test")
+async def test():
+    """
+    测试接口，用于验证域名转发配置
+    """
+    return {
+        "status": "success",
+        "message": "测试接口运行正常，域名转发配置有效",
+        "service": "Crawl4AI API"
+    }
+
+
 if __name__ == "__main__":
     # 直接运行时使用uvicorn启动
     import uvicorn
-    port = int(os.getenv("PORT", "8000"))
+    port = int(os.getenv("PORT", "8089"))
     uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)
