@@ -1,0 +1,7 @@
+crawl4ai==0.6.2
+fastapi==0.110.0
+uvicorn==0.25.0
+pydantic>=2.10.0
+httpx==0.27.2
+python-dotenv==1.0.0
+python-multipart==0.0.6
