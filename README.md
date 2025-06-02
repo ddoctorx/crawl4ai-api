@@ -1,364 +1,326 @@
 # Crawl4AI API
 
-基于 Crawl4AI 库的 RESTful API 服务，提供网页爬取和数据提取功能。
+<div align="center">
 
-## 功能特点
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
+[![Crawl4AI](https://img.shields.io/badge/Crawl4AI-0.6.2-orange)](https://github.com/unclecode/crawl4ai)
+[![Tests](https://github.com/yourusername/crawl4ai-api/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/crawl4ai-api/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/yourusername/crawl4ai-api/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/crawl4ai-api)
 
-- 单个 URL 爬取
-- 批量 URL 爬取
-- 深度网站爬取
-- 基于 CSS 选择器的结构化数据提取
-- 基于 LLM 的智能数据提取
-- 缓存控制
+[English](#english) | [中文](#中文)
 
-## 安装
+</div>
 
-### 前提条件
+## English
+
+A high-performance, production-ready RESTful API service built on [Crawl4AI](https://github.com/unclecode/crawl4ai), providing powerful web scraping and data extraction capabilities with modern async architecture.
+
+### ✨ Features
+
+- 🚀 **High Performance**: Async architecture with connection pooling for maximum throughput
+- 🔧 **Multiple Crawling Modes**: Single URL, batch processing, and deep website crawling
+- 🎯 **Smart Extraction**: CSS selectors and LLM-powered intelligent data extraction
+- 🛡️ **Production Ready**: Rate limiting, authentication, comprehensive error handling
+- 📊 **Monitoring**: Built-in health checks, metrics, and logging
+- 🐳 **Docker Support**: Easy deployment with Docker and docker-compose
+- 📚 **Full Documentation**: Interactive API docs with Swagger UI
+
+### 🚀 Quick Start
+
+#### Prerequisites
 
 - Python 3.8+
-- pip
+- pip or [uv](https://github.com/astral-sh/uv) (recommended)
 
-### 安装步骤
+#### Installation
 
-1. 克隆代码库：
+1. **Clone the repository**
 
 ```bash
-git clone https://github.com/your-username/crawl4ai-api.git
+git clone https://github.com/yourusername/crawl4ai-api.git
 cd crawl4ai-api
 ```
 
-2. 安装依赖：
+2. **Install dependencies**
 
 ```bash
+# Using the provided script (recommended)
+./run.sh --install-only
+
+# Or manually
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
+playwright install chromium
 ```
 
-3. 安装 Playwright 依赖：
+3. **Configure environment** (optional)
 
 ```bash
-playwright install
+cp .env.example .env
+# Edit .env with your settings
 ```
 
-## 配置
-
-创建`.env`文件，可以配置以下环境变量：
-
-```
-PORT=8000
-```
-
-## 运行服务
+4. **Run the service**
 
 ```bash
-uvicorn app.main:app --reload
-```
-
-或者直接运行：
-
-```bash
-python -m app.main
-```
-
-或者使用提供的脚本：
-
-```bash
+# Using the script
 ./run.sh
+
+# Or manually
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-服务默认运行在 `http://localhost:8000`
+The API will be available at `http://localhost:8000`
 
-## API 文档
+### 📖 API Documentation
 
-服务启动后，可以通过以下 URL 访问 API 文档：
+Once running, access the interactive documentation:
 
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
 
-## API 端点
+### 🔌 API Endpoints
 
-### 爬取 API
+#### Core Endpoints
 
-- `POST /api/crawl/url` - 爬取单个 URL
-- `POST /api/crawl/batch` - 批量爬取多个 URL
-- `POST /api/crawl/deep` - 深度爬取网站
-- `GET /api/crawl/health` - 健康检查
+| Method | Endpoint            | Description            |
+| ------ | ------------------- | ---------------------- |
+| POST   | `/api/crawl/url`    | Crawl a single URL     |
+| POST   | `/api/crawl/batch`  | Crawl multiple URLs    |
+| POST   | `/api/crawl/deep`   | Deep crawl a website   |
+| POST   | `/api/extract/llm`  | Extract data using LLM |
+| GET    | `/api/crawl/health` | Health check           |
+| GET    | `/api/version`      | API version info       |
 
-### 提取 API
+### 💡 Usage Examples
 
-- `POST /api/extract/llm` - 使用 LLM 提取网页数据
+#### Python
 
-## API 调用示例
+```python
+import requests
 
-以下是每个 API 端点的调用示例，包括请求和响应格式。
-
-### 1. 爬取单个 URL
-
-#### 基本爬取
-
-```bash
-# 请求
-curl -X POST http://localhost:8000/api/crawl/url \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://www.anthropic.com/engineering/building-effective-agents",
-    "bypass_cache": true,
-    "js_enabled": true
-  }'
-
-# 响应
-{
-  "url": "https://www.anthropic.com/engineering/building-effective-agents",
-  "success": true,
-  "status_code": 200,
-  "markdown": "# Building effective agents\n\nPublished Dec 19, 2024\n\nWe've worked with dozens of teams building LLM agents across industries...",
-  "error_message": null,
-  "media": {
-    "images": [
-      {"src": "https://www.anthropic.com/images/agents/workflow-diagram-1.png", "alt": "Workflow diagram"}
-    ]
-  },
-  "links": {
-    "internal": [
-      {"href": "/research", "text": "Research"}
-    ],
-    "external": [
-      {"href": "https://github.com/anthropics/cookbook", "text": "Cookbook"}
-    ]
-  }
-}
-```
-
-#### 使用 CSS 选择器
-
-```bash
-# 请求
-curl -X POST http://localhost:8000/api/crawl/url \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://www.anthropic.com/engineering/building-effective-agents",
-    "bypass_cache": true,
-    "css_selector": "article h2"
-  }'
-
-# 响应
-{
-  "url": "https://www.anthropic.com/engineering/building-effective-agents",
-  "success": true,
-  "status_code": 200,
-  "markdown": "## What are agents?\n\n## When (and when not) to use agents\n\n## When and how to use frameworks",
-  "error_message": null
-}
-```
-
-#### 使用 CSS 提取模式
-
-```bash
-# 请求
-curl -X POST http://localhost:8000/api/crawl/url \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://www.anthropic.com/engineering/building-effective-agents",
-    "bypass_cache": true,
-    "css_extraction_schema": {
-      "name": "ArticleHeadings",
-      "baseSelector": "article",
-      "fields": [
-        {
-          "name": "title",
-          "selector": "h1",
-          "type": "text"
-        },
-        {
-          "name": "sections",
-          "selector": "h2",
-          "type": "text"
-        }
-      ]
+# Crawl a single URL
+response = requests.post(
+    "http://127.0.0.1:8000/api/crawl/url",
+    json={
+        "url": "https://www.anthropic.com/engineering/building-effective-agents",
+        "js_enabled": True,
+        "bypass_cache": True
     }
-  }'
-
-# 响应
-{
-  "url": "https://www.anthropic.com/engineering/building-effective-agents",
-  "success": true,
-  "status_code": 200,
-  "extracted_content": "[{\"title\":\"Building effective agents\",\"sections\":[\"What are agents?\",\"When (and when not) to use agents\",\"When and how to use frameworks\",\"Building blocks, workflows, and agents\",\"Combining and customizing these patterns\",\"Summary\"]}]",
-  "error_message": null
-}
+)
+result = response.json()
+print(result["markdown"])
 ```
 
-### 2. 批量爬取 URLs
-
-```bash
-# 请求
-curl -X POST http://localhost:8000/api/crawl/batch \
-  -H "Content-Type: application/json" \
-  -d '{
-    "urls": [
-      "https://www.anthropic.com/engineering/building-effective-agents",
-      "https://www.anthropic.com/research"
-    ],
-    "bypass_cache": true,
-    "js_enabled": true
-  }'
-
-# 响应
-{
-  "results": [
-    {
-      "url": "https://www.anthropic.com/engineering/building-effective-agents",
-      "success": true,
-      "status_code": 200,
-      "markdown": "# Building effective agents\n\nPublished Dec 19, 2024\n\nWe've worked with dozens of teams building LLM agents across industries...",
-      "error_message": null
-    },
-    {
-      "url": "https://www.anthropic.com/research",
-      "success": true,
-      "status_code": 200,
-      "markdown": "# Research at Anthropic\n\nWe're building AI systems that are safe, beneficial, and honest...",
-      "error_message": null
-    }
-  ]
-}
-```
-
-### 3. 深度爬取网站
-
-```bash
-# 请求
-curl -X POST http://localhost:8000/api/crawl/deep \
-  -H "Content-Type: application/json" \
-  -d '{
-    "start_url": "https://www.anthropic.com/engineering",
-    "max_depth": 1,
-    "max_pages": 5,
-    "include_patterns": ["*engineering*"],
-    "exclude_patterns": ["*login*", "*pricing*"],
-    "bypass_cache": true
-  }'
-
-# 响应
-{
-  "results": [
-    {
-      "url": "https://www.anthropic.com/engineering",
-      "success": true,
-      "status_code": 200,
-      "markdown": "# Engineering at Anthropic\n\nExplore our technical blog posts...",
-      "error_message": null
-    },
-    {
-      "url": "https://www.anthropic.com/engineering/building-effective-agents",
-      "success": true,
-      "status_code": 200,
-      "markdown": "# Building effective agents\n\nPublished Dec 19, 2024...",
-      "error_message": null
-    },
-    {
-      "url": "https://www.anthropic.com/engineering/responsible-scaling",
-      "success": true,
-      "status_code": 200,
-      "markdown": "# Responsible Scaling\n\nOur approach to scaling AI systems...",
-      "error_message": null
-    }
-  ]
-}
-```
-
-### 4. 使用 LLM 提取网页数据
-
-```bash
-# 请求
-curl -X POST http://localhost:8000/api/extract/llm \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://www.anthropic.com/engineering/building-effective-agents",
-    "bypass_cache": true,
-    "llm_extraction": {
-      "schema_data": {
-        "title": "ArticleData",
-        "type": "object",
-        "properties": {
-          "title": {"type": "string"},
-          "publish_date": {"type": "string"},
-          "main_points": {"type": "array", "items": {"type": "string"}},
-          "workflows": {"type": "array", "items": {"type": "string"}}
-        }
-      },
-      "instruction": "提取这篇关于AI agents的文章的标题、发布日期、主要观点和提到的工作流类型",
-      "llm_config": {
-        "provider": "openai/gpt-4o-mini",
-        "api_token": "YOUR_API_KEY"
-      }
-    }
-  }'
-
-# 响应
-{
-  "url": "https://www.anthropic.com/engineering/building-effective-agents",
-  "success": true,
-  "status_code": 200,
-  "extracted_content": "{\"title\":\"Building effective agents\",\"publish_date\":\"Dec 19, 2024\",\"main_points\":[\"最成功的实现使用简单、可组合的模式而非复杂框架\",\"应从最简单的解决方案开始，仅在需要时增加复杂性\"],\"workflows\":[\"Prompt chaining（提示链接）\",\"Routing（路由）\",\"Parallelization（并行化）\",\"Orchestrator-workers（编排者-工作者）\",\"Evaluator-optimizer（评估者-优化者）\"]}",
-  "error_message": null
-}
-```
-
-### 5. 健康检查
-
-```bash
-# 请求
-curl http://localhost:8000/api/crawl/health
-
-# 响应
-{
-  "status": "健康",
-  "service": "crawl4ai-api"
-}
-```
-
-## JavaScript 调用示例
-
-### 爬取单个 URL (使用 fetch)
+#### JavaScript
 
 ```javascript
-fetch('http://localhost:8000/api/crawl/url', {
+// Crawl with CSS extraction
+const response = await fetch('http://localhost:8000/api/crawl/url', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
+    Authorization: 'Bearer YOUR_API_KEY', // 别忘了添加 API Key
   },
   body: JSON.stringify({
     url: 'https://www.anthropic.com/engineering/building-effective-agents',
-    bypass_cache: true,
-    js_enabled: true,
+    css_extraction_schema: {
+      name: 'ProductInfo',
+      baseSelector: '.product',
+      fields: [
+        { name: 'title', selector: 'h1', type: 'text' },
+        { name: 'price', selector: '.price', type: 'text' },
+      ],
+    },
   }),
-})
-  .then(response => response.json())
-  .then(data => console.log(data));
+});
+const data = await response.json();
 ```
 
-### 健康检查
-
-```javascript
-fetch('http://localhost:8000/api/crawl/health')
-  .then(response => response.json())
-  .then(data => console.log(data));
-```
-
-## Docker 部署
-
-构建 Docker 镜像：
+#### cURL
 
 ```bash
+# Deep crawl a website
+curl -X POST http://127.0.0.1:8000/api/crawl/deep \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start_url": "https://www.anthropic.com/engineering/building-effective-agents",
+    "max_depth": 2,
+    "max_pages": 10,
+    "include_patterns": ["*/blog/*"],
+    "exclude_patterns": ["*/admin/*"]
+  }'
+```
+
+### 🐳 Docker Deployment
+
+#### Using Docker
+
+```bash
+# Build the image
 docker build -t crawl4ai-api .
+
+# Run the container
+docker run -d \
+  -p 8000:8000 \
+  -e API_KEY_ENABLED=true \
+  -e API_KEYS=your-secret-key \
+  --name crawl4ai-api \
+  crawl4ai-api
 ```
 
-运行容器：
+#### Using Docker Compose
+
+```yaml
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - '8000:8000'
+    environment:
+      - API_KEY_ENABLED=true
+      - API_KEYS=${API_KEYS}
+      - RATE_LIMIT_CALLS=100
+      - RATE_LIMIT_PERIOD=60
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+```
+
+### 🔧 Configuration
+
+The service can be configured via environment variables or `.env` file:
+
+| Variable                | Description                            | Default |
+| ----------------------- | -------------------------------------- | ------- |
+| `PORT`                  | API service port                       | `8000`  |
+| `API_KEY_ENABLED`       | Enable API key authentication          | `false` |
+| `API_KEYS`              | Comma-separated list of valid API keys | `[]`    |
+| `RATE_LIMIT_ENABLED`    | Enable rate limiting                   | `true`  |
+| `RATE_LIMIT_CALLS`      | Max requests per period                | `100`   |
+| `RATE_LIMIT_PERIOD`     | Rate limit time window (seconds)       | `60`    |
+| `BROWSER_HEADLESS`      | Run browser in headless mode           | `true`  |
+| `MAX_CONCURRENT_CRAWLS` | Max concurrent crawl operations        | `5`     |
+| `LOG_LEVEL`             | Logging level                          | `INFO`  |
+
+See `.env.example` for all available options.
+
+### 🛡️ Security
+
+#### API Key Authentication
+
+Enable API key authentication for production:
 
 ```bash
-docker run -d -p 8000:8000 --name crawl4ai-api crawl4ai-api
+API_KEY_ENABLED=true
+API_KEYS=key1,key2,key3
 ```
 
-## 许可证
+Then include the key in requests:
 
-MIT
+```bash
+curl -H "Authorization: Bearer your-api-key" http://localhost:8000/api/crawl/url
+```
+
+#### Rate Limiting
+
+Requests are rate-limited by default. Configure limits via:
+
+```bash
+RATE_LIMIT_CALLS=100  # requests
+RATE_LIMIT_PERIOD=60  # seconds
+```
+
+### 📊 Monitoring
+
+#### Health Checks
+
+```bash
+curl http://localhost:8000/api/crawl/health
+```
+
+#### Metrics (Coming Soon)
+
+- Prometheus metrics endpoint
+- Response time tracking
+- Success/failure rates
+- Resource usage
+
+### 🧪 Testing
+
+```bash
+# Install test dependencies
+pip install -r requirements-test.txt
+
+# Run tests
+pytest
+
+# Run with coverage
+pytest --cov=app --cov-report=html
+```
+
+### 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### 📋 Roadmap
+
+- [ ] WebSocket support for real-time crawling
+- [ ] Redis integration for distributed caching
+- [ ] PostgreSQL storage backend
+- [ ] Advanced scheduling system
+- [ ] Browser session management
+- [ ] Webhook notifications
+- [ ] GraphQL API endpoint
+- [ ] Enhanced LLM extraction strategies
+
+### 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### 🙏 Acknowledgments
+
+- [Crawl4AI](https://github.com/unclecode/crawl4ai) - The powerful crawling library this API is built on
+- [FastAPI](https://fastapi.tiangolo.com/) - The modern web framework
+- [Playwright](https://playwright.dev/) - Browser automation
+
+### 📞 Support
+
+- 📧 Email: your-email@example.com
+- 💬 Discord: [Join our server](https://discord.gg/your-invite)
+- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/crawl4ai-api/issues)
+
+---
+
+## 中文
+
+基于 [Crawl4AI](https://github.com/unclecode/crawl4ai) 构建的高性能、生产就绪的 RESTful API 服务，提供强大的网页爬取和数据提取功能，采用现代异步架构。
+
+### ✨ 特性
+
+- 🚀 **高性能**: 异步架构和连接池，实现最大吞吐量
+- 🔧 **多种爬取模式**: 单个 URL、批量处理和深度网站爬取
+- 🎯 **智能提取**: CSS 选择器和基于 LLM 的智能数据提取
+- 🛡️ **生产就绪**: 速率限制、身份验证、全面的错误处理
+- 📊 **监控支持**: 内置健康检查、指标和日志记录
+- 🐳 **Docker 支持**: 使用 Docker 和 docker-compose 轻松部署
+- 📚 **完整文档**: 使用 Swagger UI 的交互式 API 文档
+
+### 🚀 快速开始
+
+详细的安装和使用说明请参考上方的英文文档。
+
+### 📄 许可证
+
+本项目采用 MIT 许可证 - 详情请见 [LICENSE](LICENSE) 文件。
