@@ -246,43 +246,11 @@ RATE_LIMIT_CALLS=100  # requests
 RATE_LIMIT_PERIOD=60  # seconds
 ```
 
-### 📊 Monitoring
-
 #### Health Checks
 
 ```bash
 curl http://localhost:8001/api/crawl/health
 ```
-
-#### Metrics (Coming Soon)
-
-- Prometheus metrics endpoint
-- Response time tracking
-- Success/failure rates
-- Resource usage
-
-### 🧪 Testing
-
-```bash
-# Install test dependencies
-pip install -r requirements-test.txt
-
-# Run tests
-pytest
-
-# Run with coverage
-pytest --cov=app --cov-report=html
-```
-
-### 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ### 📋 Roadmap
 
@@ -304,12 +272,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Crawl4AI](https://github.com/unclecode/crawl4ai) - The powerful crawling library this API is built on
 - [FastAPI](https://fastapi.tiangolo.com/) - The modern web framework
 - [Playwright](https://playwright.dev/) - Browser automation
-
-### 📞 Support
-
-- 📧 Email: your-email@example.com
-- 💬 Discord: [Join our server](https://discord.gg/your-invite)
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/crawl4ai-api/issues)
 
 ---
 
