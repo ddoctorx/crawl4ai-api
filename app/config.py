@@ -35,12 +35,23 @@ class Settings(BaseSettings):
         "--disable-dev-shm-usage",
         "--disable-gpu",
         "--disable-web-security",
-        "--disable-features=IsolateOrigins,site-per-process"
+        "--disable-features=IsolateOrigins,site-per-process",
+        "--disable-blink-features=AutomationControlled",  # 反检测
+        # 真实UA
+        "--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "--accept-lang=en-US,en;q=0.9",
+        "--accept=text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "--ignore-certificate-errors",  # 忽略证书错误
+        "--ignore-ssl-errors",
+        "--ignore-certificate-errors-spki-list",
+        "--disable-extensions",
+        "--no-first-run",
+        "--disable-default-apps"
     ]
 
     # 爬虫配置
-    PAGE_TIMEOUT: int = 30000  # 30秒
-    WAIT_FOR_IMAGES: bool = True
+    PAGE_TIMEOUT: int = 60000  # 60秒
+    WAIT_FOR_IMAGES: bool = False
     MAX_CONCURRENT_CRAWLS: int = 5
     CRAWLER_POOL_SIZE: int = 10
 

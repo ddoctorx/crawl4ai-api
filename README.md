@@ -3,11 +3,9 @@
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
 [![Crawl4AI](https://img.shields.io/badge/Crawl4AI-0.6.2-orange)](https://github.com/unclecode/crawl4ai)
-[![Tests](https://github.com/yourusername/crawl4ai-api/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/crawl4ai-api/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/yourusername/crawl4ai-api/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/crawl4ai-api)
 
 [English](#english) | [中文](#中文)
 
@@ -31,7 +29,7 @@ A high-performance, production-ready RESTful API service built on [Crawl4AI](htt
 
 #### Prerequisites
 
-- Python 3.8+
+- Python 3.10+
 - pip or [uv](https://github.com/astral-sh/uv) (recommended)
 
 #### Installation
@@ -70,17 +68,17 @@ cp .env.example .env
 ./run.sh
 
 # Or manually
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-The API will be available at `http://localhost:8000`
+The API will be available at `http://localhost:8001`
 
 ### 📖 API Documentation
 
 Once running, access the interactive documentation:
 
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
+- **Swagger UI**: http://localhost:8001/docs
+- **ReDoc**: http://localhost:8001/redoc
 
 ### 🔌 API Endpoints
 
@@ -104,7 +102,7 @@ import requests
 
 # Crawl a single URL
 response = requests.post(
-    "http://127.0.0.1:8000/api/crawl/url",
+    "http://127.0.0.1:8001/api/crawl/url",
     json={
         "url": "https://www.anthropic.com/engineering/building-effective-agents",
         "js_enabled": True,
@@ -119,32 +117,44 @@ print(result["markdown"])
 
 ```javascript
 // Crawl with CSS extraction
-const response = await fetch('http://localhost:8000/api/crawl/url', {
+fetch('http://127.0.0.1:8001/api/crawl/url', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    Authorization: 'Bearer YOUR_API_KEY', // 别忘了添加 API Key
   },
   body: JSON.stringify({
     url: 'https://www.anthropic.com/engineering/building-effective-agents',
-    css_extraction_schema: {
-      name: 'ProductInfo',
-      baseSelector: '.product',
-      fields: [
-        { name: 'title', selector: 'h1', type: 'text' },
-        { name: 'price', selector: '.price', type: 'text' },
-      ],
-    },
+    js_enabled: true,
+    bypass_cache: true,
   }),
-});
-const data = await response.json();
+})
+  .then(response => {
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json(); // 根据接口返回类型调整
+  })
+  .then(data => {
+    console.log('抓取结果:', data);
+  })
+  .catch(error => {
+    console.error('请求失败:', error);
+  });
 ```
 
 #### cURL
 
 ```bash
+curl -X POST http://127.0.0.1:8001/api/crawl/url \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://www.anthropic.com/engineering/building-effective-agents",
+    "js_enabled": true,
+    "bypass_cache": true
+  }'
+```
+
+```bash
 # Deep crawl a website
-curl -X POST http://127.0.0.1:8000/api/crawl/deep \
+curl -X POST http://127.0.0.1:8001/api/crawl/deep \
   -H "Content-Type: application/json" \
   -d '{
     "start_url": "https://www.anthropic.com/engineering/building-effective-agents",
@@ -165,7 +175,7 @@ docker build -t crawl4ai-api .
 
 # Run the container
 docker run -d \
-  -p 8000:8000 \
+  -p 8001:8001 \
   -e API_KEY_ENABLED=true \
   -e API_KEYS=your-secret-key \
   --name crawl4ai-api \
@@ -175,13 +185,13 @@ docker run -d \
 #### Using Docker Compose
 
 ```yaml
-version: '3.8'
+version: '3.10'
 
 services:
   api:
     build: .
     ports:
-      - '8000:8000'
+      - '8001:8001'
     environment:
       - API_KEY_ENABLED=true
       - API_KEYS=${API_KEYS}
@@ -198,7 +208,7 @@ The service can be configured via environment variables or `.env` file:
 
 | Variable                | Description                            | Default |
 | ----------------------- | -------------------------------------- | ------- |
-| `PORT`                  | API service port                       | `8000`  |
+| `PORT`                  | API service port                       | `8001`  |
 | `API_KEY_ENABLED`       | Enable API key authentication          | `false` |
 | `API_KEYS`              | Comma-separated list of valid API keys | `[]`    |
 | `RATE_LIMIT_ENABLED`    | Enable rate limiting                   | `true`  |
@@ -224,7 +234,7 @@ API_KEYS=key1,key2,key3
 Then include the key in requests:
 
 ```bash
-curl -H "Authorization: Bearer your-api-key" http://localhost:8000/api/crawl/url
+curl -H "Authorization: Bearer your-api-key" http://localhost:8001/api/crawl/url
 ```
 
 #### Rate Limiting
@@ -241,7 +251,7 @@ RATE_LIMIT_PERIOD=60  # seconds
 #### Health Checks
 
 ```bash
-curl http://localhost:8000/api/crawl/health
+curl http://localhost:8001/api/crawl/health
 ```
 
 #### Metrics (Coming Soon)

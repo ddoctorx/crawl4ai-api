@@ -8,7 +8,7 @@ from app.models.models import (
     CrawlResult,
     CrawlResponse
 )
-from app.services.crawler_service import CrawlerService
+from app.services.crawler_service import crawler_service  # 导入实例而不是类
 from app.utils.helpers import is_valid_url, format_error_response
 
 router = APIRouter(
@@ -26,7 +26,8 @@ async def crawl_single_url(request: CrawlRequest):
     if not is_valid_url(request.url):
         raise HTTPException(status_code=400, detail="无效的URL")
 
-    result = await CrawlerService.crawl_url(request)
+    # 修复：使用实例调用而不是类调用
+    result = await crawler_service.crawl_url(request)
     return result
 
 
@@ -43,7 +44,8 @@ async def crawl_multiple_urls(request: CrawlBatchRequest):
             detail=f"包含无效URL: {', '.join(invalid_urls)}"
         )
 
-    results = await CrawlerService.crawl_multiple_urls(request)
+    # 修复：使用实例调用
+    results = await crawler_service.crawl_multiple_urls(request)
     return CrawlResponse(results=results)
 
 
@@ -55,7 +57,8 @@ async def deep_crawl(request: DeepCrawlRequest):
     if not is_valid_url(request.start_url):
         raise HTTPException(status_code=400, detail="无效的起始URL")
 
-    results = await CrawlerService.deep_crawl(request)
+    # 修复：使用实例调用
+    results = await crawler_service.deep_crawl(request)
     return CrawlResponse(results=results)
 
 

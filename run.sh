@@ -8,7 +8,7 @@ NC='\033[0m' # 无颜色
 
 # 检查python3是否安装
 if ! command -v python3 &> /dev/null; then
-    echo -e "${RED}错误: 未找到python3。请先安装Python 3.8+${NC}"
+    echo -e "${RED}错误: 未找到python3。请先安装Python 3.10+${NC}"
     exit 1
 fi
 
@@ -28,7 +28,7 @@ show_help() {
 USE_UV=false
 USE_VENV=true
 INSTALL_ONLY=false
-PORT=8000
+PORT=8001
 
 # 解析命令行参数
 for arg in "$@"; do
@@ -125,7 +125,7 @@ if [ ! -f ".env" ]; then
 fi
 
 # 启动应用
-python3 -m uvicorn app.main:app --host 0.0.0.0 --port $PORT --reload
+python3 -m uvicorn app.main:app --host 127.0.0.1 --port $PORT --reload
 
 # 如果使用了虚拟环境，退出虚拟环境
 if [ "$USE_VENV" = true ]; then
